@@ -1,0 +1,11 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+html, body{
+  font-family: 'Open Sans', 'Helvetica Neue', 'Tahoma', sans-serif, serif;
+  height: 100%;
+}
+ul {
+  list-style-type: none;
+}
+td {
+  text-align: right;
+}
