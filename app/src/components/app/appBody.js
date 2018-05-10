@@ -11,6 +11,7 @@ export default function appBody (_this) {
         <Route exact path='/login' component={_this.state.username.length === 0 ? _this.children.Login : SimpleRedirect} />
         <Route exact path='/logout' component={_this.state.username.length !== 0 ? _this.children.Logout : SimpleRedirect} />
         <Route path='/tokens' component={_this.state.username.length !== 0 ? _this.children.Tokens : SimpleRedirect} />
+        <Route path='/exchange/:chosenMarket' component={_this.state.username.length !== 0 ? _this.children.Exchange : SimpleRedirect} />
       </Switch>
     </div>
   )

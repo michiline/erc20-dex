@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 export default class Register extends React.Component {
-  componentWillMount () {
+  componentDidMount () {
     this.props.parent.func.checkSession()
   }
   constructor (props) {
@@ -17,9 +17,6 @@ export default class Register extends React.Component {
     this.onClick = this.onClick.bind(this)
   }
   render () {
-    return this.body()
-  }
-  body () {
     return (
       <div>
         <input type='text' value={this.state.username} onChange={e => this.inputUsername(e)} placeholder='enter your username' />

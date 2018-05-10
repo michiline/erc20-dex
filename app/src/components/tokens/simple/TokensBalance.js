@@ -24,54 +24,58 @@ export default class TokensBalance extends Component {
   }
 
   async getTokens () {
-    const tokenContracts = await this.props.parent.func.getTokens()
-    const accounts = await this.props.parent.state.web3.eth.getAccounts()
-    const address = accounts[0]
-    const headers = (
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Symbol</th>
-          <th>Balance</th>
-          <th>Total Supply</th>
-        </tr>
-      </thead>
-    )
-    const body = await Promise.all(tokenContracts.map(async (contract, index) => {
-      const name = await contract.methods.name().call()
-      const symbol = await contract.methods.symbol().call()
-      const supply = await contract.methods.totalSupply().call()
-      const owner = await contract.methods.owner().call()
-      const balance = await contract.methods.balanceOf(address).call()
-      const isOwner = address === owner
-      const showInput = this.state.mintSymbol === symbol
-      const tr = (
-        <tr key={index}>
-          <td>{index + 1}</td>
-          <td>{name}</td>
-          <td>{symbol}</td>
-          <td>{balance} </td>
-          <td>{supply} </td>
-          {showInput && <td><input type='number' onChange={e => this.mintAmount(e)} placeholder='enter number of tokens' /></td>}
-          {showInput && <td><button onClick={e => this.mintTokens(contract._address)}>Mint</button></td>}
-          {isOwner && !showInput && <td><button onClick={e => this.mintSymbol(symbol)}>Mint</button></td>}
-        </tr>
+    try {
+      const tokenContracts = await this.props.parent.func.getTokens()
+      const accounts = await this.props.parent.state.web3.eth.getAccounts()
+      const address = accounts[0]
+      const headers = (
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Symbol</th>
+            <th>Balance</th>
+            <th>Total Supply</th>
+          </tr>
+        </thead>
       )
-      return tr
-    }))
-    const renderData = (
-      <table>
-        {headers}
-        <tbody>
-          {body}
-        </tbody>
-      </table>
-    )
-    this.setState({
-      tokenContracts: tokenContracts,
-      renderData: renderData
-    })
+      const body = await Promise.all(tokenContracts.map(async (contract, index) => {
+        const name = await contract.methods.name().call()
+        const symbol = await contract.methods.symbol().call()
+        const supply = await contract.methods.totalSupply().call()
+        const owner = await contract.methods.owner().call()
+        const balance = await contract.methods.balanceOf(address).call()
+        const isOwner = address === owner
+        const showInput = this.state.mintSymbol === symbol
+        const tr = (
+          <tr key={index}>
+            <td>{index + 1}</td>
+            <td>{name}</td>
+            <td>{symbol}</td>
+            <td>{balance} </td>
+            <td>{supply} </td>
+            {showInput && <td><input type='number' onChange={e => this.mintAmount(e)} placeholder='enter number of tokens' /></td>}
+            {showInput && <td><button onClick={e => this.mintTokens(contract._address)}>Mint</button></td>}
+            {isOwner && !showInput && <td><button onClick={e => this.mintSymbol(symbol)}>Mint</button></td>}
+          </tr>
+        )
+        return tr
+      }))
+      const renderData = (
+        <table>
+          {headers}
+          <tbody>
+            {body}
+          </tbody>
+        </table>
+      )
+      this.setState({
+        tokenContracts: tokenContracts,
+        renderData: renderData
+      })
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   async mintTokens (tokenAdress) {
@@ -107,5 +111,3 @@ export default class TokensBalance extends Component {
 TokensBalance.propTypes = {
   parent: PropTypes.object.isRequired
 }
-
-// {Object.keys(this.props.parent.state.tokensBalanceData).length === 0 ? 'n/a' : this.props.parent.state.tokensBalanceData}

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 export default class Home extends Component {
-  componentWillMount () {
+  componentDidMount () {
     this.props.parent.func.checkSession()
   }
   render () {

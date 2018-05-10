@@ -10,7 +10,7 @@ import appBody from './appBody'
 export default class App extends Component {
   constructor (props) {
     super(props)
-    localStorage.clear()
+    // localStorage.clear()
     appState(this)
     appFunctions(this)
     this.func.getWeb3()

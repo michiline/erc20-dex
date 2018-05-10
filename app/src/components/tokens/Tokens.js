@@ -15,17 +15,12 @@ export default class Tokens extends Component {
     tokensFunctions(this)
     tokensChildren(this)
   }
-  componentWillMount () {
+  componentDidMount () {
     this.props.parent.func.checkSession()
   }
   render () {
     return tokensBody(this)
   }
-
-  // async name (contract) {
-  //   const name = await contract.methods.name().call()
-  //   console.log(name)
-  // }
 }
 
 Tokens.propTypes = {

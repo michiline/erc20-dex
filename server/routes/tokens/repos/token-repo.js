@@ -2,8 +2,7 @@ import Token from '../models/token-model'
 
 export default {
   async create (data) {
-    const tokenData = saveToken(data)
-    const token = new Token(tokenData)
+    const token = new Token(data)
     return token.save()
   },
   async getByAddress (address) {
@@ -16,16 +15,16 @@ export default {
   async getAll () {
     const query = {}
     return Token.find(query)
+  },
+  prepareTokenData (token, body) {
+    return {
+      name: body.name,
+      symbol: body.symbol,
+      address: token.options.address,
+      jsonInterface: splitString(JSON.stringify(token.options.jsonInterface), 1000)
+    }
   }
 }
-
-function saveToken (token) {
-  return {
-    address: token.options.address,
-    jsonInterface: splitString(JSON.stringify(token.options.jsonInterface), 1000)
-  }
-}
-
 function splitString (string, size) {
   const re = new RegExp('.{1,' + size + '}', 'g')
   return string.match(re)

@@ -5,6 +5,7 @@ export default function tokensBody (_this) {
   return (
     <div>
       <ul>
+        <li><Link to='/'>Home</Link></li>
         <li><Link to='/tokens/balance'>Tokens Balance</Link></li>
         <li><Link to='/tokens/create'>Create Token</Link></li>
       </ul>

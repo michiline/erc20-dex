@@ -43,7 +43,8 @@ export default {
         gas: tokenGasEstimate * 2,
         gasPrice: '30000000000'
       })
-      tokenRepo.create(token)
+      const tokenData = tokenRepo.prepareTokenData(token, req.body)
+      tokenRepo.create(tokenData)
       req.token = token
       return next()
     } catch (err) {
@@ -59,18 +60,18 @@ export default {
       console.log(err)
       return next(err)
     }
-  },
-  async mint (req, res, next) {
-    try {
-      const token = req.user.tokens.find(token => {
-        return token.symbol === req.body.symbol
-      })
-      const tokenContract = new web3.eth.Contract(JSON.parse(token.jsonInterface), token.address)
-      await tokenContract.methods.mint(req.body.from, req.body.amount)
-      return next()
-    } catch (err) {
-      console.log(err)
-      return next(err)
-    }
   }
+  // async mint (req, res, next) {
+  //   try {
+  //     const token = req.user.tokens.find(token => {
+  //       return token.symbol === req.body.symbol
+  //     })
+  //     const tokenContract = new web3.eth.Contract(JSON.parse(token.jsonInterface), token.address)
+  //     await tokenContract.methods.mint(req.body.from, req.body.amount)
+  //     return next()
+  //   } catch (err) {
+  //     console.log(err)
+  //     return next(err)
+  //   }
+  // }
 }

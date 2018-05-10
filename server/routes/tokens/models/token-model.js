@@ -2,6 +2,8 @@ import mongoose from 'mongoose'
 
 const Schema = mongoose.Schema
 const tokenSchema = new Schema({
+  name: String,
+  symbol: String,
   address: {
     type: String,
     unique: true,
