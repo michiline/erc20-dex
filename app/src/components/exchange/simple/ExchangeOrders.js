@@ -27,20 +27,26 @@ export default class ExchangeOrders extends Component {
       const headers = (
         <thead>
           <tr>
-            <th>#</th>
-            <th>Amount {this.props.parent.state.symbolB}</th>
             <th>Price</th>
+            <th>{this.props.parent.state.symbolB}</th>
+            <th>{this.props.parent.state.symbolA}</th>
+            <th>Total {this.props.parent.state.symbolB}</th>
             <th>Total {this.props.parent.state.symbolA}</th>
           </tr>
         </thead>
       )
+      let totalA = 0
+      let totalB = 0
       const body = this.props.parent.state.buyOrders.map((order, index) => {
+        totalA += order.remainingAmountA
+        totalB += order.remainingAmountB
         const tr = (
           <tr key={index}>
-            <td>{index + 1}</td>
-            <td>{order.remainingAmountB}</td>
             <td>{parseInt(order.remainingAmountA, 10) / parseInt(order.remainingAmountB, 10)}</td>
+            <td>{order.remainingAmountB}</td>
             <td>{order.remainingAmountA}</td>
+            <td>{totalB}</td>
+            <td>{totalA}</td>
           </tr>
         )
         return tr
@@ -48,7 +54,7 @@ export default class ExchangeOrders extends Component {
       const renderData = (
         <div>
           <p><strong>Buy orders</strong></p>
-          <table>
+          <table className='green'>
             {headers}
             <tbody>
               {body}
@@ -67,20 +73,26 @@ export default class ExchangeOrders extends Component {
       const headers = (
         <thead>
           <tr>
-            <th>#</th>
-            <th>Amount {this.props.parent.state.symbolB}</th>
             <th>Price</th>
+            <th>{this.props.parent.state.symbolB}</th>
+            <th>{this.props.parent.state.symbolA}</th>
+            <th>Total {this.props.parent.state.symbolB}</th>
             <th>Total {this.props.parent.state.symbolA}</th>
           </tr>
         </thead>
       )
+      let totalA = 0
+      let totalB = 0
       const body = this.props.parent.state.sellOrders.map((order, index) => {
+        totalA += order.remainingAmountA
+        totalB += order.remainingAmountB
         const tr = (
           <tr key={index}>
-            <td>{index + 1}</td>
-            <td>{order.remainingAmountA}</td>
             <td>{parseInt(order.remainingAmountB, 10) / parseInt(order.remainingAmountA, 10)}</td>
+            <td>{order.remainingAmountA}</td>
             <td>{order.remainingAmountB}</td>
+            <td>{totalA}</td>
+            <td>{totalB}</td>
           </tr>
         )
         return tr
@@ -88,7 +100,7 @@ export default class ExchangeOrders extends Component {
       const renderData = (
         <div>
           <p><strong>Sell orders</strong></p>
-          <table>
+          <table className='red'>
             {headers}
             <tbody>
               {body}

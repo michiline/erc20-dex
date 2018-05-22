@@ -35,7 +35,7 @@ export default class TokensBalance extends Component {
             <th>Name</th>
             <th>Symbol</th>
             <th>Balance</th>
-            <th>Total Supply</th>
+            <th>sum Supply</th>
           </tr>
         </thead>
       )

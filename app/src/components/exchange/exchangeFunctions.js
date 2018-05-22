@@ -82,7 +82,8 @@ async function buyOrder (data) {
     const sender = accounts[0]
     const rate = parseFloat(data.rate, 10)
     let amountB = parseInt(data.amount, 10)
-    let amountA = amountB * rate
+    // let amountA = amountB * rate
+    let amountA
     const addressA = this.state.contractA.options.address
     const addressB = this.state.contractB.options.address
     const resOrders = await this.props.parent.api.getOrders({
@@ -96,14 +97,15 @@ async function buyOrder (data) {
       // if it's matching rate
       if (orderRate <= rate) {
         // if this order can't fill asked amount
+        amountA = amountB * orderRate
         const currentAmountA = order.remainingAmountB <= amountA ? order.remainingAmountB : amountA
         await this.state.contractA.methods.approve(swap.options.address, currentAmountA).send({ from: sender })
         await swap.methods.fill(order.swapID, currentAmountA).send(
           { from: sender,
             gas: 1500000,
-            gasPrice: '30000000000000' })
-        amountA -= currentAmountA
-        if (amountA === 0) {
+            gasPrice: '300000000000' })
+        amountB -= (currentAmountA / orderRate)
+        if (amountB === 0) {
           break
         }
       } else {
@@ -111,8 +113,8 @@ async function buyOrder (data) {
       }
     }
     // if there's still some amount left to buy
-    if (amountA > 0) {
-      amountB = amountA / rate
+    if (amountB > 0) {
+      amountA = amountB * rate
       let swapID = this.props.parent.state.web3.utils.randomHex(32)
       while (swapID.toString().length !== 64) {
         swapID = this.props.parent.state.web3.utils.randomHex(32)
@@ -122,6 +124,7 @@ async function buyOrder (data) {
       const swapCheck = await swap.methods.check(swapID).call()
       console.log(swapCheck)
     }
+    this.func.getOrders()
   } catch (err) {
     console.log(err)
   }
@@ -153,7 +156,7 @@ async function sellOrder (data) {
         await swap.methods.fill(order.swapID, currentAmountB).send(
           { from: sender,
             gas: 1500000,
-            gasPrice: '30000000000000' })
+            gasPrice: '300000000000' })
         amountB -= currentAmountB
         if (amountB === 0) {
           break
@@ -174,6 +177,7 @@ async function sellOrder (data) {
       const swapCheck = await swap.methods.check(swapID).call()
       console.log(swapCheck)
     }
+    this.func.getOrders()
   } catch (err) {
     console.log(err)
   }

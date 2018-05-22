@@ -7,10 +7,8 @@ export default class ExchangeBuySell extends Component {
     this.state = {
       buyRate: 0,
       buyAmount: 0,
-      buyTotal: 0,
       sellRate: 0,
-      sellAmount: 0,
-      sellTotal: 0
+      sellAmount: 0
     }
     this.onClickBuy = this.onClickBuy.bind(this)
     this.onClickSell = this.onClickSell.bind(this)
