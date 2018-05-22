@@ -6,6 +6,8 @@ export default class Api {
     this.logout = this.logout.bind(this)
     this.createToken = this.createToken.bind(this)
     this.getTokens = this.getTokens.bind(this)
+    this.getSwap = this.getSwap.bind(this)
+    this.getOrders = this.getOrders.bind(this)
   }
 
   // ************ USER API ************
@@ -56,6 +58,23 @@ export default class Api {
     const res = await this.axios({
       method: 'put',
       url: '/api/tokens',
+      data: data
+    })
+    return res.data
+  }
+
+  async getSwap (data) {
+    const res = await this.axios({
+      method: 'get',
+      url: '/api/swap'
+    })
+    return res.data
+  }
+
+  async getOrders (data) {
+    const res = await this.axios({
+      method: 'post',
+      url: '/api/orders',
       data: data
     })
     return res.data

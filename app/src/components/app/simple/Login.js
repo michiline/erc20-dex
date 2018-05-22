@@ -11,7 +11,6 @@ export default class Login extends React.Component {
       username: '',
       password: ''
     }
-    this.body = this.body.bind(this)
     this.inputUsername = this.inputUsername.bind(this)
     this.inputPassword = this.inputPassword.bind(this)
     this.onClick = this.onClick.bind(this)

@@ -9,12 +9,11 @@ export default {
     const query = {
       address: address
     }
-    const token = Token.findOne(query)
-    return token
+    return Token.findOne(query)
   },
   async getAll () {
     const query = {}
-    return Token.find(query)
+    return Token.find(query).sort({ symbol: 'asc' })
   },
   prepareTokenData (token, body) {
     return {

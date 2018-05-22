@@ -9,6 +9,7 @@ export default function appFunctions (_this) {
   _this.func = {
     parentWrapper: parentWrapper,
     getWeb3: getWeb3.bind(_this),
+    getSwap: getSwap.bind(_this),
     register: register.bind(_this),
     login: login.bind(_this),
     logout: logout.bind(_this),
@@ -31,6 +32,12 @@ async function getWeb3 () {
     web3: results.web3
   })
 }
+async function getSwap () {
+  const resSwap = await this.api.getSwap()
+  const swapContract = new this.state.web3.eth.Contract(JSON.parse(resSwap.data.jsonInterface), resSwap.data.address)
+  return swapContract
+}
+
 async function register (data) {
   await this.api.register(data)
   await this.func.login(data)
@@ -56,6 +63,6 @@ async function checkSession () {
     }
   } catch (err) {
     console.log(err)
-    this.api.logout()
+    await this.api.logout()
   }
 }

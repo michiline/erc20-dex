@@ -14,6 +14,7 @@ export default class App extends Component {
     appState(this)
     appFunctions(this)
     this.func.getWeb3()
+    this.func.getSwap()
     appChildren(this)
   }
 

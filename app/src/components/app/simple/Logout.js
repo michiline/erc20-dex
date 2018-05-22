@@ -7,6 +7,7 @@ class Logout extends React.Component {
   }
   async componentDidMount () {
     try {
+      localStorage.clear()
       this.props.parent.func.logout()
     } catch (err) {
       console.log(err)
