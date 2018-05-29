@@ -10,6 +10,7 @@ export default function exchangeBody (_this) {
       {_this.children.MarketPick()}
       {_this.children.BuySell()}
       {_this.children.Orders()}
+      {_this.children.OpenOrders()}
     </div>
   )
 }

@@ -71,12 +71,20 @@ export default class Api {
     return res.data
   }
 
-  async getOrders (data) {
+  async getOrders (params) {
     const res = await this.axios({
-      method: 'post',
-      url: '/api/orders',
-      data: data
+      method: 'get',
+      url: '/api/orders' + addParams(params)
     })
     return res.data
   }
+}
+
+function addParams (params) {
+  let paramsString = '?addressA=' + params.addressA
+  delete params.addressA
+  const url = Object.entries(params).reduce((acc, param) => {
+    return acc + '&' + param[0] + '=' + param[1]
+  }, paramsString)
+  return url
 }

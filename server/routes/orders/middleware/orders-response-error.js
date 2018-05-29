@@ -1,10 +1,13 @@
 import message from '../../../config/app-message'
 
 export default {
-  getAllActive (err, req, res, next) {
+  get (err, req, res, next) {
     if (err.message === message.error.unauthorized) {
       req.message = message.error.unauthorized
       req.status = 401
+    } else if (err.message === message.error.invalidData) {
+      req.message = message.error.invalidData
+      req.status = 400
     } else {
       generalError(req)
     }

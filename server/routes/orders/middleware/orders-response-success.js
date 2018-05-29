@@ -1,7 +1,7 @@
 export default {
-  getAllActive (req, res) {
+  get (req, res) {
     req.status = 200
-    req.data = getAllActive(req.orders)
+    req.data = getOrders(req.orders)
     return sendResponse(req, res)
   }
 }
@@ -13,7 +13,7 @@ function sendResponse (req, res) {
   })
 }
 
-function getAllActive (data) {
+function getOrders (data) {
   const result = data.map(order => {
     return {
       swapID: order.swapID,
@@ -25,7 +25,8 @@ function getAllActive (data) {
       remainingAmountB: order.remainingAmountB,
       addressA: order.addressA,
       addressB: order.addressB,
-      type: order.type
+      type: order.type,
+      created: order.created
     }
   })
   return result

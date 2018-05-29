@@ -12,8 +12,6 @@ export default class ExchangeBuySell extends Component {
     }
     this.onClickBuy = this.onClickBuy.bind(this)
     this.onClickSell = this.onClickSell.bind(this)
-    this.onClickExample1 = this.onClickExample1.bind(this)
-    this.onClickExample2 = this.onClickExample2.bind(this)
   }
   render () {
     return (
@@ -36,8 +34,6 @@ export default class ExchangeBuySell extends Component {
           <br />
           <input type='button' value='Sell' onClick={this.onClickSell} />
         </div>
-        <input type='button' value='Example1' onClick={this.onClickExample1} />
-        <input type='button' value='Example2' onClick={this.onClickExample2} />
       </div>
     )
   }
@@ -93,12 +89,6 @@ export default class ExchangeBuySell extends Component {
       })
       console.log(err)
     }
-  }
-  onClickExample1 () {
-    this.props.parent.func.example1()
-  }
-  onClickExample2 () {
-    this.props.parent.func.example2()
   }
 }
 

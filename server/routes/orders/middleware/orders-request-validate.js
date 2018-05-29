@@ -1,9 +1,9 @@
 import message from '../../../config/app-message'
 
 export default {
-  getAllActive (req, res, next) {
+  get (req, res, next) {
     try {
-      if (!req.body.type || !req.body.addressA || !req.body.addressB) {
+      if (!req.query.addressA || !req.query.addressB || !req.query.active || (!req.query.type && !req.query.makerAddress)) {
         throw new Error(message.error.invalidData)
       }
       return next()

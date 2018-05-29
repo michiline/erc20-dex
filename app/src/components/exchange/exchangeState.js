@@ -10,6 +10,10 @@ export default function exchangeState (_this) {
     balanceA: 0,
     balanceB: 0,
     buyOrders: [],
-    sellOrders: []
+    sellOrders: [],
+    buyOrdersRender: [],
+    sellOrdersRender: [],
+    buyOpenOrders: [],
+    sellOpenOrders: []
   }
 }

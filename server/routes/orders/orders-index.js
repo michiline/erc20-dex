@@ -74,10 +74,29 @@ async function initateListeners () {
           swapID: event.returnValues._swapID
         }
         const update = {
-          active: false
+          active: false,
+          remainingAmountA: 0,
+          remainingAmountB: 0
         }
         await orderRepo.update(query, update)
         console.log('CLOSE: ' + query)
+      } catch (err) {
+        console.log(err)
+      }
+    })
+    swapContract.events.Expire({ fromBlock: 'latest' }, async (err, event) => {
+      if (err) {
+        throw err
+      }
+      try {
+        const query = {
+          swapID: event.returnValues._swapID
+        }
+        const update = {
+          active: false
+        }
+        await orderRepo.update(query, update)
+        console.log('EXPIRE: ' + query)
       } catch (err) {
         console.log(err)
       }
@@ -92,15 +111,15 @@ function concatString (array) {
     return acc.concat(curr)
   }, '')
 }
-// get all active for given market
-router.post('/',
+
+router.get('/',
   requestAuth.checkSession,
-  requestValidate.getAllActive,
-  ordersController.getAllActive,
+  requestValidate.get,
+  ordersController.get,
   log.success,
   log.error,
-  responseSuccess.getAllActive,
-  responseError.getAllActive
+  responseSuccess.get,
+  responseError.get
 )
 
 initateListeners()

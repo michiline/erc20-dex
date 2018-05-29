@@ -4,27 +4,26 @@ import PropTypes from 'prop-types'
 export default class ExchangeOrders extends Component {
   constructor (props) {
     super(props)
-    this.buy = this.buy.bind(this)
-    this.sell = this.sell.bind(this)
+    this.expire = this.expire.bind(this)
   }
   render () {
-    if (this.props.parent.state.buyOrders.length === 0 && this.props.parent.state.sellOrders.length === 0) {
+    if (this.props.parent.state.buyOpenOrders.length === 0 && this.props.parent.state.sellOpenOrders.length === 0) {
       return (
         <div>
-          <h3>Market Orders</h3>
+          <h3>Open Orders</h3>
         </div>
       )
     }
     return (
       <div>
-        <h3>Market Orders</h3>
+        <h3>Open Orders</h3>
         {this.buy()}
         {this.sell()}
       </div>
     )
   }
   componentDidMount () {
-    this.props.parent.func.getOrders()
+    this.props.parent.func.getOpenOrders()
   }
 
   buy () {
@@ -35,23 +34,16 @@ export default class ExchangeOrders extends Component {
             <th>Price</th>
             <th>{this.props.parent.state.symbolB}</th>
             <th>{this.props.parent.state.symbolA}</th>
-            <th>Total {this.props.parent.state.symbolB}</th>
-            <th>Total {this.props.parent.state.symbolA}</th>
           </tr>
         </thead>
       )
-      let totalA = 0
-      let totalB = 0
-      const body = this.props.parent.state.buyOrdersRender.map((order, index) => {
-        totalA += order.remainingAmountA
-        totalB += order.remainingAmountB
+      const body = this.props.parent.state.buyOpenOrders.map((order, index) => {
         const tr = (
           <tr key={index}>
             <td>{parseInt(order.remainingAmountA, 10) / parseInt(order.remainingAmountB, 10)}</td>
             <td>{order.remainingAmountB}</td>
             <td>{order.remainingAmountA}</td>
-            <td>{totalB}</td>
-            <td>{totalA}</td>
+            <td><input type='button' value='Cancel' onClick={e => this.expire(order.swapID)} /></td>
           </tr>
         )
         return tr
@@ -81,23 +73,16 @@ export default class ExchangeOrders extends Component {
             <th>Price</th>
             <th>{this.props.parent.state.symbolB}</th>
             <th>{this.props.parent.state.symbolA}</th>
-            <th>Total {this.props.parent.state.symbolB}</th>
-            <th>Total {this.props.parent.state.symbolA}</th>
           </tr>
         </thead>
       )
-      let totalA = 0
-      let totalB = 0
-      const body = this.props.parent.state.sellOrdersRender.map((order, index) => {
-        totalA += order.remainingAmountA
-        totalB += order.remainingAmountB
+      const body = this.props.parent.state.sellOpenOrders.map((order, index) => {
         const tr = (
           <tr key={index}>
             <td>{parseInt(order.remainingAmountB, 10) / parseInt(order.remainingAmountA, 10)}</td>
             <td>{order.remainingAmountA}</td>
             <td>{order.remainingAmountB}</td>
-            <td>{totalA}</td>
-            <td>{totalB}</td>
+            <td><input type='button' value='Cancel' onClick={e => this.expire(order.swapID)} /></td>
           </tr>
         )
         return tr
@@ -114,6 +99,13 @@ export default class ExchangeOrders extends Component {
         </div>
       )
       return renderData
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  expire (swapID) {
+    try {
+      this.props.parent.func.expire(swapID)
     } catch (err) {
       console.log(err)
     }

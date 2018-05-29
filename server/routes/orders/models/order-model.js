@@ -35,6 +35,10 @@ const orderSchema = new Schema({
   },
   type: {
     type: String
+  },
+  created: {
+    type: Date,
+    default: Date.now
   }
 })
 

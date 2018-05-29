@@ -7,6 +7,8 @@ export default function exchangeFunctions (_this) {
     buyOrder: buyOrder.bind(_this),
     sellOrder: sellOrder.bind(_this),
     getOrders: getOrders.bind(_this),
+    getOpenOrders: getOpenOrders.bind(_this),
+    expire: expire.bind(_this),
     getSwap: _this.props.parent.func.getSwap
   }
 }
@@ -53,12 +55,14 @@ async function getTokensInfo () {
     const buyOrdersRes = await this.props.parent.api.getOrders({
       addressA: tokenContracts[0].options.address,
       addressB: tokenContracts[1].options.address,
-      type: 'buy'
+      type: 'buy',
+      active: true
     })
     const sellOrdersRes = await this.props.parent.api.getOrders({
       addressA: tokenContracts[1].options.address,
       addressB: tokenContracts[0].options.address,
-      type: 'sell'
+      type: 'sell',
+      active: true
     })
     this.setState({
       contractA: tokenContracts[0],
@@ -89,7 +93,8 @@ async function buyOrder (data) {
     const resOrders = await this.props.parent.api.getOrders({
       addressA: addressB,
       addressB: addressA,
-      type: 'sell'
+      type: 'sell',
+      active: 'true'
     })
     for (let i = 0; i < resOrders.data.length; i++) {
       const order = resOrders.data[i]
@@ -125,6 +130,7 @@ async function buyOrder (data) {
       console.log(swapCheck)
     }
     this.func.getOrders()
+    this.func.getOpenOrders()
   } catch (err) {
     console.log(err)
   }
@@ -143,7 +149,8 @@ async function sellOrder (data) {
     const resOrders = await this.props.parent.api.getOrders({
       addressA: addressA,
       addressB: addressB,
-      type: 'buy'
+      type: 'buy',
+      active: 'true'
     })
     for (let i = 0; i < resOrders.data.length; i++) {
       const order = resOrders.data[i]
@@ -178,6 +185,7 @@ async function sellOrder (data) {
       console.log(swapCheck)
     }
     this.func.getOrders()
+    this.func.getOpenOrders()
   } catch (err) {
     console.log(err)
   }
@@ -188,20 +196,89 @@ async function getOrders () {
     await this.func.getTokensInfo()
     const addressA = this.state.contractA.options.address
     const addressB = this.state.contractB.options.address
+    console.log(addressA)
+    console.log(addressB)
     const resBuyOrders = await this.props.parent.api.getOrders({
       addressA: addressA,
       addressB: addressB,
-      type: 'buy'
+      type: 'buy',
+      active: 'true'
     })
     const resSellOrders = await this.props.parent.api.getOrders({
       addressA: addressB,
       addressB: addressA,
-      type: 'sell'
+      type: 'sell',
+      active: 'true'
     })
+    const buyOrdersRender = resBuyOrders.data.reduce((acc, curr) => {
+      if (acc.length === 0 || acc[acc.length - 1].rate !== curr.rate) {
+        acc.push(curr)
+      } else if (acc[acc.length - 1].rate === curr.rate) {
+        acc[acc.length - 1].remainingAmountA += curr.remainingAmountA
+        acc[acc.length - 1].remainingAmountB += curr.remainingAmountB
+      }
+      return acc
+    }, [])
+    const sellOrdersRender = resSellOrders.data.reduce((acc, curr) => {
+      if (acc.length === 0 || acc[acc.length - 1].rate !== curr.rate) {
+        acc.push(curr)
+      } else if (acc[acc.length - 1].rate === curr.rate) {
+        acc[acc.length - 1].remainingAmountA += curr.remainingAmountA
+        acc[acc.length - 1].remainingAmountB += curr.remainingAmountB
+      }
+      return acc
+    }, [])
     this.setState({
       buyOrders: resBuyOrders.data,
-      sellOrders: resSellOrders.data
+      sellOrders: resSellOrders.data,
+      buyOrdersRender: buyOrdersRender,
+      sellOrdersRender: sellOrdersRender
     })
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+async function getOpenOrders () {
+  try {
+    await this.func.getTokensInfo()
+    const accounts = await this.props.parent.state.web3.eth.getAccounts()
+    const sender = accounts[0]
+    const addressA = this.state.contractA.options.address
+    const addressB = this.state.contractB.options.address
+    const resBuyOrders = await this.props.parent.api.getOrders({
+      makerAddress: sender,
+      addressA: addressA,
+      addressB: addressB,
+      active: 'true'
+    })
+    const resSellOrders = await this.props.parent.api.getOrders({
+      makerAddress: sender,
+      addressA: addressB,
+      addressB: addressA,
+      active: 'true'
+    })
+    this.setState({
+      buyOpenOrders: resBuyOrders.data,
+      sellOpenOrders: resSellOrders.data
+    })
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+async function expire (swapID) {
+  try {
+    try {
+      const swap = await this.props.parent.func.getSwap()
+      const accounts = await this.props.parent.state.web3.eth.getAccounts()
+      const sender = accounts[0]
+      await swap.methods.expire(swapID).send({ from: sender })
+    } catch (err) {
+      console.log(err)
+    }
+    this.func.getOrders()
+    this.func.getOpenOrders()
   } catch (err) {
     console.log(err)
   }
@@ -214,5 +291,6 @@ function marketPick (market) {
   })
   const url = `/exchange/${market}`
   this.props.history.push(url)
-  this.func.getTokensInfo()
+  this.func.getOrders()
+  this.func.getOpenOrders()
 }

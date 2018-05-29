@@ -10,9 +10,21 @@ export default {
       return next(err)
     }
   },
-  async getAllActive (req, res, next) {
+  async get (req, res, next) {
     try {
-      req.orders = await orderRepo.getAllActive(req.body)
+      const query = {
+        addressA: req.query.addressA,
+        addressB: req.query.addressB,
+        active: req.query.active
+      }
+      if (req.query.makerAddress) {
+        query.makerAddress = req.query.makerAddress
+      }
+      if (req.query.type) {
+        req.orders = await orderRepo.get(query, req.query.type)
+      } else {
+        req.orders = await orderRepo.get(query)
+      }
       return next()
     } catch (err) {
       console.log(err)
