@@ -5,6 +5,8 @@ import registerServiceWorker from './registerServiceWorker'
 
 import App from './components/app/App'
 
+import 'bootstrap/dist/css/bootstrap.css'
+
 render((
   <BrowserRouter>
     <App />

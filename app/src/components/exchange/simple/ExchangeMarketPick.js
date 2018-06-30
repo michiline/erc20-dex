@@ -4,10 +4,21 @@ import PropTypes from 'prop-types'
 export default class ExchangeMarketPick extends Component {
   render () {
     return (
-      <div>
-        <select value={this.props.parent.state.chosenMarket} onChange={e => this.props.parent.func.marketPick(e.target.value)}>
-          {marketOptions(this.props.parent.state.markets)}
-        </select>
+      <div className='row padding'>
+        <div className='col-lg'>
+          <div className='container'>
+            <div className='row'>
+              <div className='col-lg-3'>
+                <h3>Choose market: </h3>
+              </div>
+              <div className='col-lg-2'>
+                <select value={this.props.parent.state.chosenMarket} onChange={e => this.props.parent.func.marketPick(e.target.value)} className='form-control'>
+                  {marketOptions(this.props.parent.state.markets)}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }

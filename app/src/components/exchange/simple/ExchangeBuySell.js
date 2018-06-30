@@ -15,24 +15,56 @@ export default class ExchangeBuySell extends Component {
   }
   render () {
     return (
-      <div>
-        <div>
-          <h3>Buy</h3>
-          <p><strong>Available: </strong>{`${this.props.parent.state.balanceA} ${this.props.parent.state.symbolA}`}</p>
-          <strong>Price:&nbsp;</strong><input type='number' value={this.state.buyRate} onChange={e => this.inputBuyRate(e)} />
-          <br />
-          <strong>Amount:&nbsp;</strong><input type='number' value={this.state.buyAmount} onChange={e => this.inputBuyAmount(e)} />
-          <br />
-          <input type='button' value='Buy' onClick={this.onClickBuy} />
+      <div className='row padding border-top rounded-top'>
+        <div className='col-lg'>
+          <div className='container'>
+            <div className='row'>
+              <div className='col-lg-6'>
+                <h3>Buy</h3>
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-lg-6'>
+                <form>
+                  <div className='form-group'>
+                    <p><strong>Available: </strong>{`${this.props.parent.state.balanceA} ${this.props.parent.state.symbolA}`}</p>
+                    <label>Price</label>
+                    <input value={this.state.buyRate} onChange={e => this.inputBuyRate(e)} type='number' className='form-control' placeholder='Enter price' />
+                  </div>
+                  <div className='form-group'>
+                    <label>Amount</label>
+                    <input value={this.state.buyAmount} onChange={e => this.inputBuyAmount(e)} type='number' className='form-control' placeholder='Enter amount' />
+                  </div>
+                  <button onClick={this.onClickBuy} type='submit' className='btn btn-secondary float-right'>Buy</button>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <h3>Sell</h3>
-          <p><strong>Available: </strong>{`${this.props.parent.state.balanceB} ${this.props.parent.state.symbolB}`}</p>
-          <strong>Price:&nbsp;</strong><input type='number' value={this.state.sellRate} onChange={e => this.inputSellRate(e)} />
-          <br />
-          <strong>Amount:&nbsp;</strong><input type='number' value={this.state.sellAmount} onChange={e => this.inputSellAmount(e)} />
-          <br />
-          <input type='button' value='Sell' onClick={this.onClickSell} />
+        <div className='col-lg'>
+          <div className='container'>
+            <div className='row'>
+              <div className='col-lg'>
+                <h3>Sell</h3>
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-lg-6'>
+                <form>
+                  <div className='form-group'>
+                    <p><strong>Available: </strong>{`${this.props.parent.state.balanceB} ${this.props.parent.state.symbolB}`}</p>
+                    <label>Price</label>
+                    <input value={this.state.sellRate} onChange={e => this.inputSellRate(e)} type='number' className='form-control' placeholder='Enter price' />
+                  </div>
+                  <div className='form-group'>
+                    <label>Amount</label>
+                    <input value={this.state.sellAmount} onChange={e => this.inputSellAmount(e)} type='number' className='form-control' placeholder='Enter amount' />
+                  </div>
+                  <button onClick={this.onClickSell} type='submit' className='btn btn-secondary float-right'>Sell</button>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     )

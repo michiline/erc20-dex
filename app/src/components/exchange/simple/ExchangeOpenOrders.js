@@ -9,14 +9,11 @@ export default class ExchangeOrders extends Component {
   render () {
     if (this.props.parent.state.buyOpenOrders.length === 0 && this.props.parent.state.sellOpenOrders.length === 0) {
       return (
-        <div>
-          <h3>Open Orders</h3>
-        </div>
+        <div />
       )
     }
     return (
-      <div>
-        <h3>Open Orders</h3>
+      <div className='row  padding border-top rounded-top'>
         {this.buy()}
         {this.sell()}
       </div>
@@ -43,15 +40,15 @@ export default class ExchangeOrders extends Component {
             <td>{parseInt(order.remainingAmountA, 10) / parseInt(order.remainingAmountB, 10)}</td>
             <td>{order.remainingAmountB}</td>
             <td>{order.remainingAmountA}</td>
-            <td><input type='button' value='Cancel' onClick={e => this.expire(order.swapID)} /></td>
+            <td><input className='btn btn-secondary' type='button' value='Cancel' onClick={e => this.expire(order.swapID)} /></td>
           </tr>
         )
         return tr
       })
       const renderData = (
-        <div>
+        <div className='col-lg'>
           <p><strong>Buy orders</strong></p>
-          <table className='green'>
+          <table className='table table-borderless green'>
             {headers}
             <tbody>
               {body}
@@ -82,15 +79,15 @@ export default class ExchangeOrders extends Component {
             <td>{parseInt(order.remainingAmountB, 10) / parseInt(order.remainingAmountA, 10)}</td>
             <td>{order.remainingAmountA}</td>
             <td>{order.remainingAmountB}</td>
-            <td><input type='button' value='Cancel' onClick={e => this.expire(order.swapID)} /></td>
+            <td><input className='btn btn-secondary' type='button' value='Cancel' onClick={e => this.expire(order.swapID)} /></td>
           </tr>
         )
         return tr
       })
       const renderData = (
-        <div>
+        <div className='col-lg'>
           <p><strong>Sell orders</strong></p>
-          <table className='red'>
+          <table className='table table-borderless red'>
             {headers}
             <tbody>
               {body}

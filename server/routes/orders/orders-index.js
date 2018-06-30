@@ -19,6 +19,9 @@ async function initateListeners () {
   try {
     const swapContractArray = await Swap.find({})
     const swapContractData = swapContractArray[0]
+    if (!swapContractData) {
+      return
+    }
     const swapContract = new web3.eth.Contract(JSON.parse(concatString(swapContractData.jsonInterface)), swapContractData.address)
     swapContract.events.Open({ fromBlock: 'latest' }, async (err, event) => {
       if (err) {

@@ -1,3 +1,5 @@
+import getWeb3js from '../../utils/getWeb3js'
+
 export default function exchangeFunctions (_this) {
   _this.func = {
     parentWrapper: parentWrapper,
@@ -42,13 +44,15 @@ async function getMarkets () {
 
 async function getTokensInfo () {
   try {
-    const accounts = await this.props.parent.state.web3.eth.getAccounts()
+    const results = await getWeb3js
+    const web3 = results.web3
+    const accounts = await web3.eth.getAccounts()
     const address = accounts[0]
     const tokenSymbols = this.state.chosenMarket.split('-')
     const res = await this.props.parent.api.getTokens()
     const filteredTokens = res.data.filter(token => tokenSymbols.includes(token.symbol))
     const tokenContracts = filteredTokens.map(token => {
-      return new this.props.parent.state.web3.eth.Contract(JSON.parse(token.jsonInterface), token.address)
+      return new web3.eth.Contract(JSON.parse(token.jsonInterface), token.address)
     })
     const balanceA = await tokenContracts[0].methods.balanceOf(address).call()
     const balanceB = await tokenContracts[1].methods.balanceOf(address).call()
@@ -81,8 +85,10 @@ async function getTokensInfo () {
 
 async function buyOrder (data) {
   try {
+    const results = await getWeb3js
+    const web3 = results.web3
     const swap = await this.props.parent.func.getSwap()
-    const accounts = await this.props.parent.state.web3.eth.getAccounts()
+    const accounts = await web3.eth.getAccounts()
     const sender = accounts[0]
     const rate = parseFloat(data.rate, 10)
     let amountB = parseInt(data.amount, 10)
@@ -120,9 +126,9 @@ async function buyOrder (data) {
     // if there's still some amount left to buy
     if (amountB > 0) {
       amountA = amountB * rate
-      let swapID = this.props.parent.state.web3.utils.randomHex(32)
+      let swapID = web3.utils.randomHex(32)
       while (swapID.toString().length !== 64) {
-        swapID = this.props.parent.state.web3.utils.randomHex(32)
+        swapID = web3.utils.randomHex(32)
       }
       await this.state.contractA.methods.approve(swap.options.address, amountA).send({ from: sender })
       await swap.methods.open(swapID, amountA, amountB, addressA, addressB).send({ from: sender })
@@ -138,8 +144,10 @@ async function buyOrder (data) {
 
 async function sellOrder (data) {
   try {
+    const results = await getWeb3js
+    const web3 = results.web3
     const swap = await this.props.parent.func.getSwap()
-    const accounts = await this.props.parent.state.web3.eth.getAccounts()
+    const accounts = await web3.eth.getAccounts()
     const sender = accounts[0]
     const rate = parseFloat(data.rate, 10)
     let amountB = parseInt(data.amount, 10)
@@ -175,9 +183,9 @@ async function sellOrder (data) {
     // if there's still some amount left to sell
     if (amountB > 0) {
       amountA = amountB * rate
-      let swapID = this.props.parent.state.web3.utils.randomHex(32)
+      let swapID = web3.utils.randomHex(32)
       while (swapID.toString().length !== 64) {
-        swapID = this.props.parent.state.web3.utils.randomHex(32)
+        swapID = web3.utils.randomHex(32)
       }
       await this.state.contractB.methods.approve(swap.options.address, amountB).send({ from: sender })
       await swap.methods.open(swapID, amountB, amountA, addressB, addressA).send({ from: sender })
@@ -196,8 +204,6 @@ async function getOrders () {
     await this.func.getTokensInfo()
     const addressA = this.state.contractA.options.address
     const addressB = this.state.contractB.options.address
-    console.log(addressA)
-    console.log(addressB)
     const resBuyOrders = await this.props.parent.api.getOrders({
       addressA: addressA,
       addressB: addressB,
@@ -241,8 +247,10 @@ async function getOrders () {
 
 async function getOpenOrders () {
   try {
+    const results = await getWeb3js
+    const web3 = results.web3
     await this.func.getTokensInfo()
-    const accounts = await this.props.parent.state.web3.eth.getAccounts()
+    const accounts = await web3.eth.getAccounts()
     const sender = accounts[0]
     const addressA = this.state.contractA.options.address
     const addressB = this.state.contractB.options.address
@@ -270,8 +278,10 @@ async function getOpenOrders () {
 async function expire (swapID) {
   try {
     try {
+      const results = await getWeb3js
+      const web3 = results.web3
       const swap = await this.props.parent.func.getSwap()
-      const accounts = await this.props.parent.state.web3.eth.getAccounts()
+      const accounts = await web3.eth.getAccounts()
       const sender = accounts[0]
       await swap.methods.expire(swapID).send({ from: sender })
     } catch (err) {

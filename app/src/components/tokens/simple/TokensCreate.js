@@ -20,14 +20,26 @@ export default class TokensCreate extends React.Component {
   }
   body () {
     return (
-      <div>
-        <input type='text' value={this.state.name} onChange={e => this.inputName(e)} placeholder='enter token name' />
-        <br />
-        <input type='text' value={this.state.symbol} onChange={e => this.inputSymbol(e)} placeholder='enter token symbol' />
-        <br />
-        <input type='number' value={this.state.supply} onChange={e => this.inputSupply(e)} placeholder='enter token supply' />
-        <br />
-        <input type='button' value='Create token' onClick={this.onClick} />
+      <div className='container'>
+        <div className='row'>
+          <div className='col-lg-4 dark-grey padding'>
+            <form>
+              <div className='form-group'>
+                <label>Name</label>
+                <input value={this.state.name} onChange={e => this.inputName(e)} type='text' className='form-control' placeholder='Enter token name' />
+              </div>
+              <div className='form-group'>
+                <label>Symbol</label>
+                <input value={this.state.symbol} onChange={e => this.inputSymbol(e)} type='text' className='form-control' placeholder='Enter token symbol' />
+              </div>
+              <div className='form-group'>
+                <label>Supply</label>
+                <input value={this.state.supply} onChange={e => this.inputSupply(e)} type='number' className='form-control' placeholder='Enter token supply' />
+              </div>
+              <button onClick={this.onClick} type='submit' className='btn btn-secondary'>Create token</button>
+            </form>
+          </div>
+        </div>
       </div>
     )
   }

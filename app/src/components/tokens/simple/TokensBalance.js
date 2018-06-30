@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import getWeb3js from '../../../utils/getWeb3js'
+
 export default class TokensBalance extends Component {
   constructor (props) {
     super(props)
@@ -30,8 +32,10 @@ export default class TokensBalance extends Component {
 
   async getTokens () {
     try {
+      const results = await getWeb3js
+      const web3 = results.web3
       const tokenContracts = await this.props.parent.func.getTokens()
-      const accounts = await this.props.parent.state.web3.eth.getAccounts()
+      const accounts = await web3.eth.getAccounts()
       const address = accounts[0]
       const headers = (
         <thead>
@@ -40,7 +44,9 @@ export default class TokensBalance extends Component {
             <th>Name</th>
             <th>Symbol</th>
             <th>Balance</th>
-            <th>sum Supply</th>
+            <th>Supply</th>
+            <th />
+            <th />
           </tr>
         </thead>
       )
@@ -60,19 +66,18 @@ export default class TokensBalance extends Component {
             <td>{symbol}</td>
             <td>{balance} </td>
             <td>{supply} </td>
-            {showMintInput && <td><input type='number' onChange={e => this.mintAmount(e)} placeholder='enter number of tokens' /></td>}
-            {showMintInput && <td><button onClick={e => this.mintTokens(contract._address)}>Mint</button></td>}
-            {isOwner && !showMintInput && <td><button onClick={e => this.mintSymbol(symbol)}>Mint</button></td>}
-
-            {showBurnInput && <td><input type='number' onChange={e => this.burnAmount(e)} placeholder='enter number of tokens' /></td>}
-            {showBurnInput && <td><button onClick={e => this.burnTokens(contract._address)}>Burn</button></td>}
-            {!showBurnInput && <td><button onClick={e => this.burnSymbol(symbol)}>Burn</button></td>}
+            {showMintInput && <td><button onClick={e => this.mintTokens(contract._address)} type='submit' className='btn btn-secondary'>Mint</button></td>}
+            {isOwner && !showMintInput && <td><button onClick={e => this.mintSymbol(symbol)} type='submit' className='btn btn-secondary'>Mint</button></td>}
+            {showMintInput && <td><input type='number' onChange={e => this.mintAmount(e)} className='form-control input-small' min='1' /></td>}
+            {showBurnInput && <td><button onClick={e => this.burnTokens(contract._address)} type='submit' className='btn btn-secondary'>Burn</button></td>}
+            {!showBurnInput && <td><button onClick={e => this.burnSymbol(symbol)} type='submit' className='btn btn-secondary'>Burn</button></td>}
+            {showBurnInput && <td><input type='number' onChange={e => this.burnAmount(e)} className='form-control input-small' min='1' /></td>}
           </tr>
         )
         return tr
       }))
       const renderData = (
-        <table>
+        <table className='table'>
           {headers}
           <tbody>
             {body}
@@ -90,31 +95,41 @@ export default class TokensBalance extends Component {
 
   async mintTokens (tokenAdress) {
     try {
-      const accounts = await this.props.parent.state.web3.eth.getAccounts()
+      const results = await getWeb3js
+      const web3 = results.web3
+      const accounts = await web3.eth.getAccounts()
       const sender = accounts[0]
       const tokenContract = this.state.tokenContracts.find(token => token._address === tokenAdress)
       await tokenContract.methods.mint(sender, this.state.mintAmount).send({ from: sender })
     } catch (err) {
-      this.setState({
-        mintSymbol: '',
-        mintAmount: ''
-      })
       console.log(err)
     }
+    await this.setState({
+      mintSymbol: '',
+      mintAmount: '',
+      burnSymbol: '',
+      burnAmount: ''
+    })
+    this.getTokens()
   }
   async burnTokens (tokenAdress) {
     try {
-      const accounts = await this.props.parent.state.web3.eth.getAccounts()
+      const results = await getWeb3js
+      const web3 = results.web3
+      const accounts = await web3.eth.getAccounts()
       const from = accounts[0]
       const tokenContract = this.state.tokenContracts.find(token => token._address === tokenAdress)
       await tokenContract.methods.burn(this.state.burnAmount).send({ from: from })
     } catch (err) {
-      this.setState({
-        burnSymbol: '',
-        burnAmount: ''
-      })
       console.log(err)
     }
+    this.setState({
+      burnSymbol: '',
+      burnAmount: '',
+      mintSymbol: '',
+      mintAmount: ''
+    })
+    this.getTokens()
   }
 
   async mintAmount (e) {

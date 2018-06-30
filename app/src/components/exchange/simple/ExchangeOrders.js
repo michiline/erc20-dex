@@ -10,14 +10,11 @@ export default class ExchangeOrders extends Component {
   render () {
     if (this.props.parent.state.buyOrders.length === 0 && this.props.parent.state.sellOrders.length === 0) {
       return (
-        <div>
-          <h3>Market Orders</h3>
-        </div>
+        <div />
       )
     }
     return (
-      <div>
-        <h3>Market Orders</h3>
+      <div className='row padding border-top rounded-top'>
         {this.buy()}
         {this.sell()}
       </div>
@@ -57,9 +54,9 @@ export default class ExchangeOrders extends Component {
         return tr
       })
       const renderData = (
-        <div>
+        <div className='col-lg'>
           <p><strong>Buy orders</strong></p>
-          <table className='green'>
+          <table className='table table-borderless green'>
             {headers}
             <tbody>
               {body}
@@ -103,9 +100,9 @@ export default class ExchangeOrders extends Component {
         return tr
       })
       const renderData = (
-        <div>
+        <div className='col-lg'>
           <p><strong>Sell orders</strong></p>
-          <table className='red'>
+          <table className='table table-borderless red'>
             {headers}
             <tbody>
               {body}
