@@ -5,11 +5,11 @@ import "./ERC20Interface.sol";
 contract ERC20Swap {
 
   struct Swap {
-    uint256 openValue;
-    address openTrader;
-    address openContractAddress;
+    uint256 initialAmount;
+    address makerAddress;
+    address addressA;
     uint256 closeValue;
-    address closeContractAddress;
+    address addressB;
   }
 
   enum States {
@@ -36,19 +36,19 @@ contract ERC20Swap {
     _;
   }
 
-  function open(bytes32 _swapID, uint256 _openValue, address _openContractAddress, uint256 _closeValue, address _closeContractAddress) public onlyInvalidSwaps(_swapID) {
+  function open(bytes32 _swapID, uint256 _initialAmount, address _addressA, uint256 _closeValue, address _addressB) public onlyInvalidSwaps(_swapID) {
     // Transfer value from the opening trader to this contract.
-    ERC20Interface openERC20Contract = ERC20Interface(_openContractAddress);
-    require(_openValue <= openERC20Contract.allowance(msg.sender, address(this)));
-    require(openERC20Contract.transferFrom(msg.sender, address(this), _openValue));
+    ERC20Interface openERC20Contract = ERC20Interface(_addressA);
+    require(_initialAmount <= openERC20Contract.allowance(msg.sender, address(this)));
+    require(openERC20Contract.transferFrom(msg.sender, address(this), _initialAmount));
 
     // Store the details of the swap.
     Swap memory swap = Swap({
-      openValue: _openValue,
-      openTrader: msg.sender,
-      openContractAddress: _openContractAddress,
+      initialAmount: _initialAmount,
+      makerAddress: msg.sender,
+      addressA: _addressA,
       closeValue: _closeValue,
-      closeContractAddress: _closeContractAddress
+      addressB: _addressB
     });
     swaps[_swapID] = swap;
     swapStates[_swapID] = States.OPEN;
@@ -62,13 +62,13 @@ contract ERC20Swap {
     swapStates[_swapID] = States.CLOSED;
 
     // Transfer the closing funds from the closing trader to the opening trader.
-    ERC20Interface closeERC20Contract = ERC20Interface(swap.closeContractAddress);
+    ERC20Interface closeERC20Contract = ERC20Interface(swap.addressB);
     require(swap.closeValue <= closeERC20Contract.allowance(msg.sender, address(this)));
-    require(closeERC20Contract.transferFrom(msg.sender, swap.openTrader, swap.closeValue));
+    require(closeERC20Contract.transferFrom(msg.sender, swap.makerAddress, swap.closeValue));
 
     // Transfer the opening funds from this contract to the closing trader.
-    ERC20Interface openERC20Contract = ERC20Interface(swap.openContractAddress);
-    require(openERC20Contract.transfer(msg.sender, swap.openValue));
+    ERC20Interface openERC20Contract = ERC20Interface(swap.addressA);
+    require(openERC20Contract.transfer(msg.sender, swap.initialAmount));
 
     emit Close(_swapID);
   }
@@ -79,14 +79,14 @@ contract ERC20Swap {
     swapStates[_swapID] = States.EXPIRED;
 
     // Transfer opening value from this contract back to the opening trader.
-    ERC20Interface openERC20Contract = ERC20Interface(swap.openContractAddress);
-    require(openERC20Contract.transfer(swap.openTrader, swap.openValue));
+    ERC20Interface openERC20Contract = ERC20Interface(swap.addressA);
+    require(openERC20Contract.transfer(swap.makerAddress, swap.initialAmount));
 
     emit Expire(_swapID);
   }
 
-  function check(bytes32 _swapID) public view returns (uint256 openValue, address openContractAddress, uint256 closeValue, address closeContractAddress) {
+  function check(bytes32 _swapID) public view returns (uint256 initialAmount, address addressA, uint256 closeValue, address addressB) {
     Swap memory swap = swaps[_swapID];
-    return (swap.openValue, swap.openContractAddress, swap.closeValue, swap.closeContractAddress);
+    return (swap.initialAmount, swap.addressA, swap.closeValue, swap.addressB);
   }
 }

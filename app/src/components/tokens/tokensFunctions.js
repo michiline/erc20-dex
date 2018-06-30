@@ -42,12 +42,11 @@ async function createToken (data) {
 async function mintTokens (symbol, amount) {
   try {
     const accounts = await this.props.parent.state.web3.eth.getAccounts()
-    const res = await this.props.parent.api.mintTokens({
+    await this.props.parent.api.mintTokens({
       from: accounts[0],
       symbol: symbol,
       amount: amount
     })
-    console.log(res.data)
   } catch (err) {
     console.log(err)
   }

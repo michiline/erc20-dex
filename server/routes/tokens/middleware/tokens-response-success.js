@@ -31,6 +31,8 @@ function mapTokenCreate (data) {
 function mapTokensGet (data) {
   return data.map(token => {
     return {
+      name: token.name,
+      symbol: token.symbol,
       jsonInterface: concatString(token.jsonInterface),
       address: token.address
     }

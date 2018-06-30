@@ -1,20 +1,29 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 
 export default class Home extends Component {
-  componentWillMount () {
+  componentDidMount () {
     this.props.parent.func.checkSession()
   }
   render () {
     return (
       <div>
-        <h1>Hello guest, welcome to decentralized exchange!</h1>
-        <ul>
-          <li><Link to='/'>Home</Link></li>
-          <li><Link to='/login'>Login</Link></li>
-          <li><Link to='/register'>Register</Link></li>
-        </ul>
+        <nav className='navbar navbar-expand-lg navbar-light bg-light'>
+          <a className='navbar-brand' href='/'>Decentralized exchange</a>
+          <div className='collapse navbar-collapse'>
+            <div className='navbar-nav'>
+              <a className='nav-item nav-link active' href='/'>Home <span className='sr-only'>(current)</span></a>
+              <a className='nav-item nav-link' href='/register'>Register</a>
+              <a className='nav-item nav-link' href='/login'>Login</a>
+            </div>
+          </div>
+        </nav>
+        <div className='jumbotron jumbotron-fluid'>
+          <div className='container'>
+            <h1 className='display-4'>Hello guest, welcome to decentralized exchange!</h1>
+            <p className='lead'>Don't waste time! Create your account and start trading.</p>
+          </div>
+        </div>
       </div>
     )
   }

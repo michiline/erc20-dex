@@ -6,6 +6,54 @@ html, body{
 ul {
   list-style-type: none;
 }
-td {
+tr, td {
   text-align: right;
+  vertical-align: middle !important;
+}
+input[type='number'] {
+    -moz-appearance:textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.red {
+  background-color: rgba(255,0,0,0.2) !important;
+}
+.green {
+  background-color: rgba(0,255,0,0.2) !important;
+}
+
+.login-row {
+  margin-top: 3vh;
+}
+.bounty-navlink {
+  color: #7C7C7D;
+}
+.bounty-navlink:hover {
+  color: #292929
+}
+.active-bounty-navlink {
+  color: #292929;
+}
+.no-padding {
+  padding: 0 !important
+}
+.dark-grey {
+  background-color: #F8F9FA
+}
+.padding-top {
+  padding-top: 8vh;
+}
+.input-small {
+  width: 6vw !important;
+}
+.margin-top {
+  margin-top: 5vh !important;
+}
+.padding {
+  padding-top: 3vh !important;
+  padding-bottom: 3vh !important;
 }

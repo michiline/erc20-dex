@@ -11,6 +11,9 @@ export default {
     userLoggedIn: 'LOGGED_IN',
     userLoggedOut: 'LOGGED_OUT',
     tokenCreated: 'TOKEN_CREATED',
-    tokensMinted: 'TOKENS_MINTED'
+    tokensMinted: 'TOKENS_MINTED',
+    swapCreaped: 'SWAP_CREATED',
+    orderCreated: 'ORDER_CREATED',
+    orderClosed: 'ORDER_CLOSED'
   }
 }

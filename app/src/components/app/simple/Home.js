@@ -1,21 +1,33 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 
 export default class Home extends Component {
-  componentWillMount () {
+  componentDidMount () {
     this.props.parent.func.checkSession()
   }
   render () {
+    const exchangeUrl = `/exchange/${localStorage.getItem('chosenMarket') || 'none'}`
     return (
       <div>
-        <h1>Hello {this.props.parent.state.username}, welcome to decentralized exchange!</h1>
-        <ul>
-          <li><Link to='/'>Home</Link></li>
-          <li><Link to='/tokens'>Tokens</Link></li>
-          <li><Link to='/logout'>Logout</Link></li>
-        </ul>
+        <nav className='navbar navbar-expand-lg navbar-light bg-light'>
+          <a className='navbar-brand' href='/'>Decentralized exchange</a>
+          <div className='collapse navbar-collapse'>
+            <div className='navbar-nav'>
+              <a className='nav-item nav-link active' href='/'>Home <span className='sr-only'>(current)</span></a>
+              <a className='nav-item nav-link' href='/tokens/balance'>Tokens</a>
+              <a className='nav-item nav-link' href={exchangeUrl}>Exchange</a>
+              <a className='nav-item nav-link' href='/logout'>Logout</a>
+            </div>
+          </div>
+        </nav>
+        <div className='jumbotron jumbotron-fluid'>
+          <div className='container'>
+            <h1 className='display-4'>Hello <strong>{this.props.parent.state.username}</strong>, welcome to decentralized exchange!</h1>
+            <p className='lead'>Don't waste time! Create your own token and head over to exchange to start trading.</p>
+          </div>
+        </div>
       </div>
+
     )
   }
 }

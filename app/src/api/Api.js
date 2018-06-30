@@ -6,6 +6,8 @@ export default class Api {
     this.logout = this.logout.bind(this)
     this.createToken = this.createToken.bind(this)
     this.getTokens = this.getTokens.bind(this)
+    this.getSwap = this.getSwap.bind(this)
+    this.getOrders = this.getOrders.bind(this)
   }
 
   // ************ USER API ************
@@ -60,4 +62,29 @@ export default class Api {
     })
     return res.data
   }
+
+  async getSwap (data) {
+    const res = await this.axios({
+      method: 'get',
+      url: '/api/swap'
+    })
+    return res.data
+  }
+
+  async getOrders (params) {
+    const res = await this.axios({
+      method: 'get',
+      url: '/api/orders' + addParams(params)
+    })
+    return res.data
+  }
+}
+
+function addParams (params) {
+  let paramsString = '?addressA=' + params.addressA
+  delete params.addressA
+  const url = Object.entries(params).reduce((acc, param) => {
+    return acc + '&' + param[0] + '=' + param[1]
+  }, paramsString)
+  return url
 }

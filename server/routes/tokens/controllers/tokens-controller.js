@@ -4,8 +4,9 @@ import solc from 'solc'
 import Web3 from 'web3'
 
 import tokenRepo from '../../tokens/repos/token-repo'
+import marketRepo from '../../tokens/repos/market-repo'
 
-const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:7545'))
+const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:9545'))
 
 export default {
   async create (req, res, next) {
@@ -43,7 +44,25 @@ export default {
         gas: tokenGasEstimate * 2,
         gasPrice: '30000000000'
       })
-      tokenRepo.create(token)
+      const tokenData = tokenRepo.prepareTokenData(token, req.body)
+      const tokens = await tokenRepo.getAll()
+      if (tokens.length !== 0) {
+        tokens.forEach(_token => {
+          marketRepo.create({
+            name: _token.symbol + '-' + req.body.symbol,
+            addressA: _token.address,
+            addressB: token.options.address,
+            type: _token.symbol < req.body.symbol ? 'buy' : 'sell'
+          })
+          marketRepo.create({
+            name: req.body.symbol + '-' + _token.symbol,
+            addressA: token.options.address,
+            addressB: _token.address,
+            type: _token.symbol < req.body.symbol ? 'sell' : 'buy'
+          })
+        })
+      }
+      tokenRepo.create(tokenData)
       req.token = token
       return next()
     } catch (err) {
@@ -59,18 +78,18 @@ export default {
       console.log(err)
       return next(err)
     }
-  },
-  async mint (req, res, next) {
-    try {
-      const token = req.user.tokens.find(token => {
-        return token.symbol === req.body.symbol
-      })
-      const tokenContract = new web3.eth.Contract(JSON.parse(token.jsonInterface), token.address)
-      await tokenContract.methods.mint(req.body.from, req.body.amount)
-      return next()
-    } catch (err) {
-      console.log(err)
-      return next(err)
-    }
   }
+  // async mint (req, res, next) {
+  //   try {
+  //     const token = req.user.tokens.find(token => {
+  //       return token.symbol === req.body.symbol
+  //     })
+  //     const tokenContract = new web3.eth.Contract(JSON.parse(token.jsonInterface), token.address)
+  //     await tokenContract.methods.mint(req.body.from, req.body.amount)
+  //     return next()
+  //   } catch (err) {
+  //     console.log(err)
+  //     return next(err)
+  //   }
+  // }
 }
